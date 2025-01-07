@@ -1,0 +1,36 @@
+#to build docker container image (OCI) please use below command
+docker image build -t ryanjayf/configserver:v1 .
+
+#to push docker container image in docker hub, please use below command
+docker image push ryanjayf/configserver:v1
+
+#create docker network (if not yet created)
+docker network create my_network
+
+#to run docker container image locally
+docker run -d --name configserver --network my_network -p 8888:8888 ryanjayf/configserver:v1 --eureka.client.service-url.defaultZone=http://discover-server:8761/eureka
+
+##troubleshooting / managing app 
+#list running docker container(s)
+docker ps
+#list running docker container(s) including stopped ones
+docker ps -a
+#to stop running docker container
+docker stop configserver
+#to remove docker container
+docker rm configserver
+#to stop and remove docker container
+docker rm -f configserver
+#to inspect docker directly
+docker inspect configserver
+#to verify logs inside the container
+docker logs configserver
+#verify application accessibility from inside the container
+docker exec -it configserver curl http://localhost:8888
+#to stop container
+docker container stop configserver
+#to start container
+docker container start configserver
+#to access the shell prompt of a running Docker container, use the following command:
+docker exec -it configserver /bin/sh
+#CTRL+P+Q to exit without stopping the running container
