@@ -11,7 +11,7 @@ LABEL org.opencontainers.image.source="https://github.com/ryanjayf/io.configserv
 WORKDIR /app
 
 # Copy Maven wrapper files and pom.xml first to leverage Docker layer caching
-COPY pom.xml mvnw mvnw.cmd ./
+COPY pom.xml mvnw mvnw.cmd ./ 
 COPY .mvn .mvn
 
 # Download dependencies
@@ -26,13 +26,16 @@ RUN ./mvnw package -DskipTests
 # Use OpenJDK 11 for runtime
 FROM openjdk:11-jdk-slim
 
+# Install curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory for the runtime container
 WORKDIR /app
 
 # Copy the JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8761 for Eureka
+# Expose port 8888 for the Config Server
 EXPOSE 8888
 
 # Set the entry point to run the Spring Boot application
